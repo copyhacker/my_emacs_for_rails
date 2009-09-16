@@ -313,6 +313,7 @@ t)
 (require 'ruby-electric)
 (add-hook 'ruby-mode-hook 'turn-on-font-lock)
 (add-to-list 'auto-mode-alist '("\\.rjs$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
 
 ;; ruby-block
 (add-to-list 'load-path "~/.emacs.d/plugins/ruby-block")
