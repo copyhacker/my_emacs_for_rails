@@ -17,7 +17,7 @@
 (setq font-lock-maximum-decoration t)
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq require-final-newline t)
-(setq default-major-mode 'text-mode)
+(setq major-mode 'text-mode)
 
 ;; turn on paren matching
 (show-paren-mode t)
@@ -32,9 +32,11 @@
 ;; Get back font antialiasing
 (push '(font-backend xft x) default-frame-alist)
 
-(global-font-lock-mode t t)
+;(global-font-lock-mode t t)
 (setq font-lock-maximum-decoration t)
 
+;(setq default-directory "~/Documentos/WyeWorks/Proys/")
+(setq default-directory "~/")
 
 ;; Get rid of toolbar, scrollbar, menubar
 (progn
@@ -42,6 +44,9 @@
 ;  (menu-bar-mode)
   (scroll-bar-mode))
 
+(add-to-list 'load-path "~/.emacs.d/plugins/textmate")
+(require 'textmate)
+(textmate-mode)
 
 ;; redo
 (add-to-list  'load-path "~/.emacs.d/plugins/redo")
@@ -180,8 +185,9 @@ LIST defaults to all existing live buffers."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(ecb-layout-window-sizes (quote (("left8" (ecb-directories-buffer-name 0.23671497584541062 . 0.29310344827586204) (ecb-sources-buffer-name 0.23671497584541062 . 0.2413793103448276) (ecb-methods-buffer-name 0.23671497584541062 . 0.27586206896551724) (ecb-history-buffer-name 0.23671497584541062 . 0.1724137931034483)))))
+ '(ecb-layout-window-sizes (quote (("left8" (ecb-directories-buffer-name 0.23671497584541062 . 0.29310344827586204) (ecb-sources-buffer-name 0.23671497584541062 . 0.22413793103448276) (ecb-methods-buffer-name 0.23671497584541062 . 0.25862068965517243) (ecb-history-buffer-name 0.23671497584541062 . 0.20689655172413793)))))
  '(ecb-options-version "2.40"))
+;; resize the windows on emacs and run ecb-store-window-sizes
 ; '(show-paren-mode t))
 
 
@@ -216,7 +222,7 @@ LIST defaults to all existing live buffers."
 
 
 ;; tabkey2
-(load "~/.emacs.d/plugins/nxhtml/util/tabkey2.el")
+;(load "~/.emacs.d/plugins/nxhtml/util/tabkey2.el")
 
 
 
@@ -310,6 +316,7 @@ t)
 
 ;; ruby-mode
 (add-to-list 'load-path "~/.emacs.d/plugins/ruby-mode")
+(require 'ruby-mode)
 (require 'ruby-electric)
 (add-hook 'ruby-mode-hook 'turn-on-font-lock)
 (add-to-list 'auto-mode-alist '("\\.rjs$" . ruby-mode))
@@ -371,17 +378,18 @@ t)
 
 
 ;; nxhtml
-(setq *nxhtml-autostart-file* (expand-file-name "~/.emacs.d/plugins/nxhtml/autostart.el"))
-(load *nxhtml-autostart-file*)
-(setq
-      nxhtml-global-minor-mode t
-      mumamo-chunk-coloring 'submode-colored
-      nxhtml-skip-welcome t
-      indent-region-mode t
-      rng-nxml-auto-validate-flag nil
-      nxml-degraded t)
-(add-to-list 'auto-mode-alist '("\\.html$" . nxhtml-mumamo-mode))
-(add-to-list 'auto-mode-alist '("\\.html\\.erb$" . eruby-nxhtml-mumamo-mode))
+;(setq *nxhtml-autostart-file* (expand-file-name "~/.emacs.d/plugins/nxhtml/autostart.el"))
+;(load *nxhtml-autostart-file*)
+;(setq
+;      nxhtml-global-minor-mode t
+;      mumamo-chunk-coloring 'submode-colored
+;      nxhtml-skip-welcome t
+;      indent-region-mode t
+;      nxhtml-default-encoding "utf8"
+;      rng-nxml-auto-validate-flag nil
+;      nxml-degraded t)
+;(add-to-list 'auto-mode-alist '("\\.html$" . nxhtml-mumamo-mode))
+;(add-to-list 'auto-mode-alist '("\\.html\\.erb$" . eruby-nxhtml-mumamo-mode))
 ;(add-hook 'nxhtml-mumamo-mode-hook 'tabkey2-mode)
 ;(add-hook 'eruby-nxhtml-mumamo-mode-hook 'tabkey2-mode)
 
@@ -462,37 +470,68 @@ makes)."
              ))
 
 
-;; yasnippet
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/plugins/yasnippet/snippets")
-
-
-;; yasnippet rails
-(load "~/.emacs.d/plugins/yasnippets-rails/setup.el")
-
-
 ;; Rinari
 (add-to-list 'load-path "~/.emacs.d/plugins/rinari")
 (require 'rinari)
 (setq rinari-tags-file-name "TAGS")
 
 
+;; yasnippet
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/plugins/yasnippet/snippets")
+(setq require-final-newline nil)
+
+;; yasnippet rails
+(load "~/.emacs.d/plugins/yasnippets-rails/setup.el")
+
+
+(add-to-list 'load-path "~/.emacs.d/plugins/autotest")
+(require 'autotest)
+
+
+;; rhtml-mode
+(add-to-list 'load-path "~/.emacs.d/plugins/rhtml")
+(require 'rhtml-mode)
+(add-hook 'rhtml-mode-hook
+  (lambda () (rinari-launch)))
+
+(add-hook 'rhtml-mode
+          (let ((original-command (lookup-key rhtml-mode-map [tab])))
+            `(lambda ()
+               (setq yas/fallback-behavior
+                     '(apply ,original-command))
+               (local-set-key [tab] 'yas/expand))))
+
+
 (add-to-list 'load-path "~/.emacs.d/plugins/auto-complete")
- (when (require 'auto-complete nil t)
-   (require 'auto-complete-yasnippet)
-   (require 'auto-complete-ruby)
-   (require 'auto-complete-css)
+(require 'auto-complete-config)
+;(global-auto-complete-mode t)
+;(define-key ac-complete-mode-map "\C-n" 'ac-next)
+;(define-key ac-complete-mode-map "\C-p" 'ac-previous)
+;;     ;; start completion when entered 3 characters
+;(setq ac-auto-start 2)
+;; Add following code to your .emacs.
+;;
+;(define-key ac-complete-mode-map "\t" 'ac-complete)
+;(define-key ac-complete-mode-map "\r" nil)
+
+
+;(add-to-list 'load-path "~/.emacs.d/plugins/auto-complete")
+; (when (require 'auto-complete nil t)
+;   (require 'auto-complete-yasnippet)
+;   (require 'auto-complete-ruby)
+;   (require 'auto-complete-css)
 
    (global-auto-complete-mode t)           ;enable global-mode
    (setq ac-auto-start t)                  ;automatically start
    (setq ac-dwim 3)                        ;Do what i mean
    (setq ac-override-local-map nil)        ;don't override local map
-;   (define-key ac-complete-mode-map "\t" 'ac-expand)
-;   (define-key ac-complete-mode-map "\r" 'ac-complete)
-;   (define-key ac-complete-mode-map "\M-n" 'ac-next)
-;   (define-key ac-complete-mode-map "\M-p" 'ac-previous)
+;;   (define-key ac-complete-mode-map "\t" 'ac-expand)
+;;   (define-key ac-complete-mode-map "\r" 'ac-complete)
+;;   (define-key ac-complete-mode-map "\M-n" 'ac-next)
+;;   (define-key ac-complete-mode-map "\M-p" 'ac-previous)
    (set-default 'ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-words-in-buffer))
 
    (setq ac-modes
@@ -512,11 +551,7 @@ makes)."
 
    (add-hook 'ruby-mode-hook
              (lambda ()
-               (setq ac-omni-completion-sources '(("\\.\\=" ac-source-rcodetools))))))
-
-
-(add-to-list 'load-path "~/.emacs.d/plugins/autotest")
-(require 'autotest)
+               (setq ac-omni-completion-sources '(("\\.\\=" ac-source-rcodetools)))));)
 
 
 ;; ri
@@ -539,3 +574,4 @@ makes)."
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
+
