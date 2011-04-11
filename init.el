@@ -225,6 +225,20 @@ LIST defaults to all existing live buffers."
 ;(load "~/.emacs.d/plugins/nxhtml/util/tabkey2.el")
 
 
+;; -----------------------------------------------------------------------------
+;; Git support
+;; -----------------------------------------------------------------------------
+
+;; Hack in Git path
+(when (equal system-type 'darwin)
+  (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+  (push "/usr/local/bin" exec-path))
+
+(load "/usr/local/Cellar/git/1.7.3.4/share/doc/git-core/contrib/emacs/git.el")
+(load "/usr/local/Cellar/git/1.7.3.4/share/doc/git-core/contrib/emacs/git-blame.el")
+(load "/usr/local/Cellar/emacs/23.3/share/emacs/23.3/lisp/vc-git.elc")
+(add-to-list 'vc-handled-backends 'GIT)
+
 
 ;; DTD mode
 (autoload 'dtd-mode "tdtd" "Major mode for SGML and XML DTDs." t)
@@ -340,6 +354,17 @@ t)
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
+;; haml
+(add-to-list 'load-path "~/.emacs.d/plugins/haml-mode")
+(require 'haml-mode)
+(add-hook 'haml-mode-hook
+                  '(lambda ()
+                         (setq indent-tabs-mode nil)
+                         (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
+;; coffeescript
+(add-to-list 'load-path "~/.emacs.d/plugins/coffee-mode")
+(require 'coffee-mode)
 
 ;; rdebug
 (add-to-list 'load-path "~/.emacs.d/plugins/rdebug")
